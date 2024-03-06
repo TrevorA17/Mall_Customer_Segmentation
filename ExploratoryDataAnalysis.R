@@ -63,3 +63,46 @@ print(paste("Mean:", mean_score))
 print(paste("Median:", median_score))
 print(paste("Mode:", mode_score))
 
+#Measures of Distribution
+# Display range for Age, Annual Income, and Spending Score
+age_range <- range(CustomerData$Age)
+income_range <- range(CustomerData$Annual_Income)
+score_range <- range(CustomerData$Spending_Score)
+
+print("Range for Age:")
+print(age_range)
+
+print("Range for Annual Income:")
+print(income_range)
+
+print("Range for Spending Score:")
+print(score_range)
+
+# Display standard deviation for Age, Annual Income, and Spending Score
+sd_age <- sd(CustomerData$Age)
+sd_income <- sd(CustomerData$Annual_Income)
+sd_score <- sd(CustomerData$Spending_Score)
+
+print("Standard Deviation for Age:")
+print(sd_age)
+
+print("Standard Deviation for Annual Income:")
+print(sd_income)
+
+print("Standard Deviation for Spending Score:")
+print(sd_score)
+
+# Display quantiles for Age, Annual Income, and Spending Score
+quantiles_age <- quantile(CustomerData$Age)
+quantiles_income <- quantile(CustomerData$Annual_Income)
+quantiles_score <- quantile(CustomerData$Spending_Score)
+
+print("Quantiles for Age:")
+print(quantiles_age)
+
+print("Quantiles for Annual Income:")
+print(quantiles_income)
+
+print("Quantiles for Spending Score:")
+print(quantiles_score)
+
