@@ -122,3 +122,18 @@ plot(CustomerData$Annual_Income, CustomerData$Spending_Score, main = "Scatter Pl
 # Add regression line to the scatter plot
 abline(lm(Spending_Score ~ Annual_Income, data = CustomerData), col = "red")
 
+#ANOVA
+# Perform ANOVA for Age, Annual Income, and Spending Score based on Gender
+anova_age <- aov(Age ~ Gender, data = CustomerData)
+anova_income <- aov(Annual_Income ~ Gender, data = CustomerData)
+anova_score <- aov(Spending_Score ~ Gender, data = CustomerData)
+
+# Display ANOVA results
+print("ANOVA for Age:")
+print(summary(anova_age))
+
+print("ANOVA for Annual Income:")
+print(summary(anova_income))
+
+print("ANOVA for Spending Score:")
+print(summary(anova_score))
