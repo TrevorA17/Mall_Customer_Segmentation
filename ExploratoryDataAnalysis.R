@@ -106,3 +106,19 @@ print(quantiles_income)
 print("Quantiles for Spending Score:")
 print(quantiles_score)
 
+#Measures of Relationship
+# Display correlation matrix
+correlation_matrix <- cor(CustomerData[, c("Age", "Annual_Income", "Spending_Score")])
+print("Correlation Matrix:")
+print(correlation_matrix)
+
+# Scatter plot matrix
+pairs(CustomerData[, c("Age", "Annual_Income", "Spending_Score")], main = "Scatter Plot Matrix")
+
+# Scatter plot between Annual Income and Spending Score
+plot(CustomerData$Annual_Income, CustomerData$Spending_Score, main = "Scatter Plot: Annual Income vs Spending Score", 
+     xlab = "Annual Income", ylab = "Spending Score", col = as.numeric(CustomerData$Gender))
+
+# Add regression line to the scatter plot
+abline(lm(Spending_Score ~ Annual_Income, data = CustomerData), col = "red")
+
