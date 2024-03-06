@@ -157,3 +157,38 @@ ggplot(CustomerData, aes(x = Spending_Score, fill = Gender)) +
   geom_density(alpha = 0.5) +
   labs(title = "Density Plot of Spending Score", x = "Spending Score", y = "Density") +
   scale_fill_manual(values = c("pink", "lightblue"))
+
+#MultiVariate Plots
+# Load the necessary libraries
+library(ggplot2)
+
+# Multivariate scatter plot matrix
+ggplot(CustomerData, aes(x = Age, y = Annual_Income, color = Gender)) +
+  geom_point() +
+  labs(title = "Scatter Plot Matrix", x = "Age", y = "Annual Income") +
+  theme_minimal()
+
+# Multivariate scatter plot for Spending Score vs. Annual Income
+ggplot(CustomerData, aes(x = Annual_Income, y = Spending_Score, color = Gender)) +
+  geom_point() +
+  labs(title = "Scatter Plot: Spending Score vs. Annual Income", x = "Annual Income", y = "Spending Score") +
+  theme_minimal()
+
+# Multivariate 3D scatter plot
+library(plotly)
+
+plot_ly(
+  data = CustomerData,
+  x = ~Age,
+  y = ~Annual_Income,
+  z = ~Spending_Score,
+  color = ~Gender,
+  type = "scatter3d",
+  mode = "markers"
+) %>%
+  layout(scene = list(xaxis = list(title = "Age"),
+                      yaxis = list(title = "Annual Income"),
+                      zaxis = list(title = "Spending Score"),
+                      aspectmode = "manual",
+                      aspectratio = list(x = 1, y = 1, z = 0.5))
+  )
