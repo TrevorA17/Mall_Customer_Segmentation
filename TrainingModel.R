@@ -118,3 +118,35 @@ ggplot(CustomerData, aes(x = Annual_Income, y = Spending_Score, color = Cluster)
   labs(title = "Customer Segmentation", x = "Annual Income", y = "Spending Score") +
   theme_minimal()
 
+#Performance Comparison
+# Load the necessary libraries
+library(cluster)  # For k-means clustering
+library(dbscan)   # For DBSCAN
+library(fpc)      # For silhouette measure
+
+
+
+# Set a seed for reproducibility
+set.seed(123)
+
+# Select relevant features for clustering
+clustering_features <- CustomerData[, c("Annual_Income", "Spending_Score")]
+
+# Specify the number of clusters for k-means
+num_clusters <- 3
+
+# Fit the clustering models
+kmeans_model <- kmeans(clustering_features, centers = num_clusters)
+dbscan_model <- dbscan(clustering_features, eps = 0.5, MinPts = 5)
+pam_model <- pam(clustering_features, k = num_clusters)
+
+# Evaluate clustering quality using silhouette width
+silhouette_kmeans <- silhouette(kmeans_model$cluster, dist(clustering_features))
+silhouette_dbscan <- silhouette(dbscan_model$cluster, dist(clustering_features))
+silhouette_pam <- silhouette(pam_model$cluster, dist(clustering_features))
+
+# Print silhouette width for each clustering model
+cat("K-means Silhouette Width:", mean(silhouette_kmeans[, 3]), "\n")
+cat("DBSCAN Silhouette Width:", mean(silhouette_dbscan[, 3]), "\n")
+cat("PAM Silhouette Width:", mean(silhouette_pam[, 3]), "\n")
+
