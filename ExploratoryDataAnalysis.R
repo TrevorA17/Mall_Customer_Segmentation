@@ -137,3 +137,23 @@ print(summary(anova_income))
 
 print("ANOVA for Spending Score:")
 print(summary(anova_score))
+
+#Univariate Plots
+# Load the necessary libraries
+library(ggplot2)
+# Univariate plot for Age - Histogram
+ggplot(CustomerData, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Histogram of Age", x = "Age", y = "Frequency")
+
+# Univariate plot for Annual Income - Boxplot
+ggplot(CustomerData, aes(x = 1, y = Annual_Income, fill = Gender)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Annual Income", x = "", y = "Annual Income") +
+  scale_fill_manual(values = c("pink", "lightblue"))
+
+# Univariate plot for Spending Score - Density Plot
+ggplot(CustomerData, aes(x = Spending_Score, fill = Gender)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of Spending Score", x = "Spending Score", y = "Density") +
+  scale_fill_manual(values = c("pink", "lightblue"))
