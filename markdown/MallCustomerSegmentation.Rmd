@@ -50,29 +50,16 @@ The dataset that was used can be downloaded here: *\<https://www.kaggle.com/data
 Refer to the APA 7th edition manual for rules on how to cite datasets: <https://apastyle.apa.org/style-grammar-guidelines/references/examples/data-set-references>*
 
 ```{r Load dataset}
-#Load dataset
-TitanicData <-read.csv("titanic.csv", colClasses = c(
-  PassengerId = "numeric",
-  Pclass = "numeric",
-  Name = "character",
-  Sex = "factor",
+#Load Dataset
+
+CustomerData <-read.csv("Customers.csv", colClasses = c(
+  CustomerId = "numeric",
+  Gender = "factor",
   Age = "numeric",
-  SibSp = "numeric",
-  Parch = "numeric",
-  Ticket = "character",
-  Fare = "numeric",
-  Cabin = "character",
-  Embarked = "factor"
+  Annual_Income = "numeric",
+  Spending_Score = "numeric"
 ))
 
-# Define levels for categorical columns
-embarked_levels <- c("C", "Q", "S")
-sex_levels <- c("female", "male")
-
-# Update factor columns with levels
-TitanicData$Embarked <- factor(TitanicData$Embarked, levels = embarked_levels)
-TitanicData$Sex <- factor(TitanicData$Sex, levels = sex_levels)
-
-# Display the dataset
-View(TitanicData)
+#View Dataset
+View(CustomerData)
 ```
