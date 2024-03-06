@@ -60,3 +60,26 @@ print(boot_results)
 hist(boot_results$t, main = "Bootstrap Distribution of Mean Spending_Score", xlab = "Mean Spending_Score")
 
 
+# Load the necessary libraries
+install.packages("caret")
+library(caret)
+
+# Set a seed for reproducibility
+set.seed(123)
+
+# Specify the number of folds for cross-validation
+num_folds <- 5
+
+# Create a training control object for cross-validation
+train_control <- trainControl(method = "cv", number = num_folds)
+
+# Train a model (linear regression) using cross-validation
+model <- train(Spending_Score ~ Age + Annual_Income + Gender, data = CustomerData, method = "lm", trControl = train_control)
+
+# Display the cross-validation results
+print("Cross-Validation Results:")
+print(model$results)
+
+# Plot the cross-validated performance
+plot(model)
+
