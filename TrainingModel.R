@@ -80,6 +80,41 @@ model <- train(Spending_Score ~ Age + Annual_Income + Gender, data = CustomerDat
 print("Cross-Validation Results:")
 print(model$results)
 
-# Plot the cross-validated performance
-plot(model)
+# Model Training
+# Load the necessary libraries
+# install.packages("ggplot2")
+library(ggplot2)
+
+# Load the dataset
+# Select relevant features for clustering
+features <- CustomerData[, c("Annual_Income", "Spending_Score")]
+
+# Set a seed for reproducibility
+set.seed(123)
+
+# Determine the optimal number of clusters (K) using the elbow method
+wss <- numeric(10)
+for (i in 1:10) {
+  kmeans_model <- kmeans(features, centers = i, nstart = 10)
+  wss[i] <- sum(kmeans_model$withinss)
+}
+
+# Plot the elbow curve
+plot(1:10, wss, type = "b", pch = 19, frame = FALSE, main = "Elbow Method for Optimal K",
+     xlab = "Number of Clusters (K)", ylab = "Within-cluster Sum of Squares (WSS)")
+
+# Determine the optimal K visually (elbow point)
+optimal_k <- 3  # Replace with the visually determined optimal K
+
+# Apply K-means clustering with the optimal K
+kmeans_model <- kmeans(features, centers = optimal_k, nstart = 10)
+
+# Add cluster information to the original dataset
+CustomerData$Cluster <- as.factor(kmeans_model$cluster)
+
+# Plot the clusters
+ggplot(CustomerData, aes(x = Annual_Income, y = Spending_Score, color = Cluster)) +
+  geom_point() +
+  labs(title = "Customer Segmentation", x = "Annual Income", y = "Spending Score") +
+  theme_minimal()
 
