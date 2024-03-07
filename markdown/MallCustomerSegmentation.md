@@ -18,6 +18,11 @@ Trevor Okinda
     - [Multivariate Plots](#multivariate-plots)
     - [Check for missingness](#check-for-missingness)
     - [Data Transformations](#data-transformations)
+    - [Data splitting](#data-splitting)
+    - [Boostrapping](#boostrapping)
+    - [Cross-validation](#cross-validation)
+    - [Model Training](#model-training)
+    - [Performance Comparison](#performance-comparison)
 
 # Student Details
 
@@ -546,3 +551,242 @@ head(CustomerData)
     ## 4          4 Female -1.1346547     -1.696572      1.0378135         <NA>
     ## 5          5 Female -0.5619583     -1.658498     -0.3949887         <NA>
     ## 6          6 Female -1.2062418     -1.658498      0.9990891         <NA>
+
+### Data splitting
+
+``` r
+# Data Splitting
+# Install and load the necessary libraries
+library(caret)
+```
+
+    ## Loading required package: lattice
+
+``` r
+# Set a seed for reproducibility
+set.seed(123)
+
+# Specify the proportion for training and testing sets
+split_ratio <- 0.8  # 80% for training, 20% for testing
+
+# Split the data
+splitIndex <- createDataPartition(CustomerData$Spending_Score, p = split_ratio, list = FALSE)
+train_data <- CustomerData[splitIndex, ]
+test_data <- CustomerData[-splitIndex, ]
+
+# Display the dimensions of the split datasets
+cat("Training data dimensions:", dim(train_data), "\n")
+```
+
+    ## Training data dimensions: 161 6
+
+``` r
+cat("Testing data dimensions:", dim(test_data), "\n")
+```
+
+    ## Testing data dimensions: 39 6
+
+### Boostrapping
+
+``` r
+#Bootstrapping
+# Load the necessary libraries
+library(boot)
+```
+
+    ## 
+    ## Attaching package: 'boot'
+
+    ## The following object is masked from 'package:lattice':
+    ## 
+    ##     melanoma
+
+``` r
+# Set a seed for reproducibility
+set.seed(123)
+
+# Function to calculate the mean of the variable of interest
+calculate_mean <- function(data, indices) {
+  sample_data <- data[indices, ]
+  return(mean(sample_data$Spending_Score))
+}
+
+# Number of bootstrap samples
+num_boot_samples <- 1000
+
+# Perform bootstrapping
+boot_results <- boot(data = CustomerData, statistic = calculate_mean, R = num_boot_samples)
+
+# Display the bootstrap results
+print("Bootstrap Results:")
+```
+
+    ## [1] "Bootstrap Results:"
+
+``` r
+print(boot_results)
+```
+
+    ## 
+    ## ORDINARY NONPARAMETRIC BOOTSTRAP
+    ## 
+    ## 
+    ## Call:
+    ## boot(data = CustomerData, statistic = calculate_mean, R = num_boot_samples)
+    ## 
+    ## 
+    ## Bootstrap Statistics :
+    ##          original        bias    std. error
+    ## t1* -1.096708e-16 -0.0001771641  0.07078456
+
+``` r
+# Plot the bootstrap distribution
+hist(boot_results$t, main = "Bootstrap Distribution of Mean Spending_Score", xlab = "Mean Spending_Score")
+```
+
+![](MallCustomerSegmentation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+### Cross-validation
+
+``` r
+# Load the necessary libraries
+install.packages("caret")
+library(caret)
+
+# Set a seed for reproducibility
+set.seed(123)
+
+# Specify the number of folds for cross-validation
+num_folds <- 5
+
+# Create a training control object for cross-validation
+train_control <- trainControl(method = "cv", number = num_folds)
+
+# Train a model (linear regression) using cross-validation
+model <- train(Spending_Score ~ Age + Annual_Income + Gender, data = CustomerData, method = "lm", trControl = train_control)
+
+# Display the cross-validation results
+print("Cross-Validation Results:")
+```
+
+    ## [1] "Cross-Validation Results:"
+
+``` r
+print(model$results)
+```
+
+    ##   intercept      RMSE   Rsquared       MAE     RMSESD RsquaredSD      MAESD
+    ## 1      TRUE 0.9574651 0.08691095 0.8066011 0.06061771 0.03892875 0.06058021
+
+### Model Training
+
+``` r
+# Model Training
+# Load the necessary libraries
+# install.packages("ggplot2")
+library(ggplot2)
+
+# Load the dataset
+# Select relevant features for clustering
+features <- CustomerData[, c("Annual_Income", "Spending_Score")]
+
+# Set a seed for reproducibility
+set.seed(123)
+
+# Determine the optimal number of clusters (K) using the elbow method
+wss <- numeric(10)
+for (i in 1:10) {
+  kmeans_model <- kmeans(features, centers = i, nstart = 10)
+  wss[i] <- sum(kmeans_model$withinss)
+}
+
+# Plot the elbow curve
+plot(1:10, wss, type = "b", pch = 19, frame = FALSE, main = "Elbow Method for Optimal K",
+     xlab = "Number of Clusters (K)", ylab = "Within-cluster Sum of Squares (WSS)")
+```
+
+![](MallCustomerSegmentation_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+# Determine the optimal K visually (elbow point)
+optimal_k <- 3  # Replace with the visually determined optimal K
+
+# Apply K-means clustering with the optimal K
+kmeans_model <- kmeans(features, centers = optimal_k, nstart = 10)
+
+# Add cluster information to the original dataset
+CustomerData$Cluster <- as.factor(kmeans_model$cluster)
+
+# Plot the clusters
+ggplot(CustomerData, aes(x = Annual_Income, y = Spending_Score, color = Cluster)) +
+  geom_point() +
+  labs(title = "Customer Segmentation", x = "Annual Income", y = "Spending Score") +
+  theme_minimal()
+```
+
+![](MallCustomerSegmentation_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
+
+### Performance Comparison
+
+``` r
+#Performance Comparison
+# Load the necessary libraries
+library(cluster)  # For k-means clustering
+library(dbscan)   # For DBSCAN
+```
+
+    ## 
+    ## Attaching package: 'dbscan'
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     as.dendrogram
+
+``` r
+library(fpc)      # For silhouette measure
+```
+
+    ## 
+    ## Attaching package: 'fpc'
+
+    ## The following object is masked from 'package:dbscan':
+    ## 
+    ##     dbscan
+
+``` r
+# Set a seed for reproducibility
+set.seed(123)
+
+# Select relevant features for clustering
+clustering_features <- CustomerData[, c("Annual_Income", "Spending_Score")]
+
+# Specify the number of clusters for k-means
+num_clusters <- 3
+
+# Fit the clustering models
+kmeans_model <- kmeans(clustering_features, centers = num_clusters)
+dbscan_model <- dbscan(clustering_features, eps = 0.5, MinPts = 5)
+pam_model <- pam(clustering_features, k = num_clusters)
+
+# Evaluate clustering quality using silhouette width
+silhouette_kmeans <- silhouette(kmeans_model$cluster, dist(clustering_features))
+silhouette_dbscan <- silhouette(dbscan_model$cluster, dist(clustering_features))
+silhouette_pam <- silhouette(pam_model$cluster, dist(clustering_features))
+
+# Print silhouette width for each clustering model
+cat("K-means Silhouette Width:", mean(silhouette_kmeans[, 3]), "\n")
+```
+
+    ## K-means Silhouette Width: 0.3853219
+
+``` r
+cat("DBSCAN Silhouette Width:", mean(silhouette_dbscan[, 3]), "\n")
+```
+
+    ## DBSCAN Silhouette Width: 0.3504462
+
+``` r
+cat("PAM Silhouette Width:", mean(silhouette_pam[, 3]), "\n")
+```
+
+    ## PAM Silhouette Width: 0.4641152
