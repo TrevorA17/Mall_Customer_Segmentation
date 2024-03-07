@@ -1,4 +1,4 @@
-Titanic Survival Prediction Model
+Mall Customer Segmentation
 ================
 Trevor Okinda
 
@@ -16,15 +16,17 @@ Trevor Okinda
     - [ANOVA](#anova)
     - [Univariate Plots](#univariate-plots)
     - [Multivariate Plots](#multivariate-plots)
+    - [Check for missingness](#check-for-missingness)
+    - [Data Transformations](#data-transformations)
 
 # Student Details
 
-|                       |                                   |
-|-----------------------|-----------------------------------|
-| **Student ID Number** | 134780                            |
-| **Student Name**      | Trevor Okinda                     |
-| **BBIT 4.2 Group**    | C                                 |
-| **Project Name**      | Titanic Survival Prediction Model |
+|                       |                            |
+|-----------------------|----------------------------|
+| **Student ID Number** | 134780                     |
+| **Student Name**      | Trevor Okinda              |
+| **BBIT 4.2 Group**    | C                          |
+| **Project Name**      | Mall Customer Segmentation |
 
 # Setup Chunk
 
@@ -501,3 +503,46 @@ ggplot(CustomerData, aes(x = Annual_Income, y = Spending_Score, color = Gender))
 ```
 
 ![](MallCustomerSegmentation_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+
+### Check for missingness
+
+``` r
+# Check for missing values
+missing_values <- sum(is.na(CustomerData))
+
+# Display confirmation
+if (missing_values > 0) {
+  print("Missing values are present in the dataset.")
+  print(paste("Total missing values: ", missing_values))
+  print("Columns with missing values:")
+  print(names(CustomerData)[colSums(is.na(CustomerData)) > 0])
+} else {
+  print("No missing values are present in the dataset.")
+}
+```
+
+    ## [1] "No missing values are present in the dataset."
+
+### Data Transformations
+
+``` r
+# Data transformations
+
+# Standardizing numeric variables (Age, Annual_Income, Spending_Score)
+numeric_cols <- c("Age", "Annual_Income", "Spending_Score")
+CustomerData[numeric_cols] <- scale(CustomerData[numeric_cols])
+
+# Creating a new feature (Age category)
+CustomerData$Age_Category <- cut(CustomerData$Age, breaks = c(0, 30, 50, Inf), labels = c("Young", "Middle-aged", "Senior"))
+
+# Display the transformed dataset
+head(CustomerData)
+```
+
+    ##   CustomerID Gender        Age Annual_Income Spending_Score Age_Category
+    ## 1          1   Male -1.4210029     -1.734646     -0.4337131         <NA>
+    ## 2          2   Male -1.2778288     -1.734646      1.1927111         <NA>
+    ## 3          3 Female -1.3494159     -1.696572     -1.7116178         <NA>
+    ## 4          4 Female -1.1346547     -1.696572      1.0378135         <NA>
+    ## 5          5 Female -0.5619583     -1.658498     -0.3949887         <NA>
+    ## 6          6 Female -1.2062418     -1.658498      0.9990891         <NA>
