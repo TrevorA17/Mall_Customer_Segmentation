@@ -1,5 +1,5 @@
 ---
-title: "Titanic Survival Prediction Model"
+title: "Mall Customer Segmentation"
 author: "Trevor Okinda"
 date: ""
 output:
@@ -20,7 +20,7 @@ editor_options:
 | **Student ID Number**                        | 134780 |
 | **Student Name**                             | Trevor Okinda |
 | **BBIT 4.2 Group**                           | C |
-| **Project Name**                             | Titanic Survival Prediction Model |
+| **Project Name**                             | Mall Customer Segmentation |
 
 # Setup Chunk
 
